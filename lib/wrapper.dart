@@ -14,7 +14,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:newproject/admin.dart';
 import 'package:newproject/login.dart';
-import 'package:newproject/user.dart';
+import 'package:newproject/screens/search_screen.dart';
+// import 'package:newproject/user.dart';
+import 'package:newproject/screens/search_screen.dart';
 
 // Wrapper is a StatefulWidget because the UI changes dynamically
 // depending on authentication state and Firestore data.
@@ -120,9 +122,10 @@ class _WrapperState extends State<Wrapper> {
               // open Admin page else user page
               if (role == "admin") {
 
-                return const AdminPage();
+                return AdminPage();
               }
-              return const UserPage();
+              //returns user screen
+              return SearchScreen();
             },
           );
         },
