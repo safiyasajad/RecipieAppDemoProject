@@ -16,7 +16,6 @@ import 'package:newproject/admin.dart';
 import 'package:newproject/login.dart';
 import 'package:newproject/screens/search_screen.dart';
 // import 'package:newproject/user.dart';
-import 'package:newproject/screens/search_screen.dart';
 
 // Wrapper is a StatefulWidget because the UI changes dynamically
 // depending on authentication state and Firestore data.
@@ -28,15 +27,11 @@ class Wrapper extends StatefulWidget {
 }
 
 class _WrapperState extends State<Wrapper> {
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
       // body contains the main logic of the app startup flow.
       body: StreamBuilder(
-
         // authStateChanges() continuously listens for login/logout changes.
         //
         // Examples:
@@ -49,14 +44,12 @@ class _WrapperState extends State<Wrapper> {
         stream: FirebaseAuth.instance.authStateChanges(),
         // builder rebuilds the UI whenever the auth stream changes.
         builder: (context, snapshot) {
-
-        
           // This prevents the app from showing blank pages or crashing
           // before Firebase finishes loading.
           if (snapshot.connectionState == ConnectionState.waiting) {
-
             return const Center(
-              child: CircularProgressIndicator(), // While Firebase is checking the user's authentication state, show a loading spinner.
+              child:
+                  CircularProgressIndicator(), // While Firebase is checking the user's authentication state, show a loading spinner.
             );
           }
 
@@ -71,7 +64,6 @@ class _WrapperState extends State<Wrapper> {
           // Is this user an admin or a normal user?
           // For that, we fetch their Firestore document.
           return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-
             // Retrieve the user's Firestore document using their UID.
             //Example path: users/abc123uid
             future: FirebaseFirestore.instance
@@ -81,14 +73,9 @@ class _WrapperState extends State<Wrapper> {
 
             // builder runs once Firestore returns the document.
             builder: (context, userSnapshot) {
-
               // While Firestore is still loading user data,a loading spinner is shows
-              if (userSnapshot.connectionState ==
-                  ConnectionState.waiting) {
-
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+              if (userSnapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
               }
 
               // If Firestore fails to load:
@@ -98,13 +85,11 @@ class _WrapperState extends State<Wrapper> {
               //
               // show error message on screen.
               if (userSnapshot.hasError) {
-
                 return Center(
                   child: Padding(
                     padding: const EdgeInsets.all(20),
 
                     child: Text(
-
                       // Display actual Firestore error.
                       "Could not load user role: ${userSnapshot.error}",
 
@@ -115,13 +100,11 @@ class _WrapperState extends State<Wrapper> {
               }
 
               // Extract the "role" field from Firestore document. user or admin
-              final role =
-                  userSnapshot.data?.data()?["role"];
+              final role = userSnapshot.data?.data()?["role"];
 
               // If role equals admin:
               // open Admin page else user page
               if (role == "admin") {
-
                 return AdminPage();
               }
               //returns user screen
