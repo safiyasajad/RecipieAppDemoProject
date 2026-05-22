@@ -1,15 +1,59 @@
 import 'package:flutter/material.dart'; //standard widget that has elements to build interface
 import 'package:newproject/models/meal_plan_model.dart';
+import 'package:newproject/screens/admin_recipes_screen.dart';
 import 'package:newproject/screens/meals_screen.dart';
 import 'package:newproject/services/api_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SearchScreen extends StatefulWidget {
+  const SearchScreen({super.key});
+
   @override
-  _SearchScreenState createState() => _SearchScreenState();
+  State<SearchScreen> createState() => _SearchScreenState();
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  List<String> _diets = [
+  Future<void> signout() async {
+    await FirebaseAuth.instance.signOut(); //signs user out of application.
+  }
+
+  void _showUserOptions() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.restaurant_menu),
+                title: const Text('Admin Recipes'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const AdminRecipesScreen(),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.logout),
+                title: const Text('Logout'),
+                onTap: () {
+                  Navigator.pop(context);
+                  signout();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  final List<String> _diets = [
     'None',
     'Gluten Free',
     'Ketogenic',
@@ -33,11 +77,11 @@ class _SearchScreenState extends State<SearchScreen> {
       diet: _diet,
     );
 
+    if (!mounted) return;
+
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => MealsScreen(mealPlan: mealPlan),
-      ),
+      MaterialPageRoute(builder: (_) => MealsScreen(mealPlan: mealPlan)),
     );
   }
 
@@ -58,15 +102,11 @@ class _SearchScreenState extends State<SearchScreen> {
         // widget in the centre
         child: Center(
           child: Container(
-            margin: EdgeInsets.symmetric(
-              horizontal: 30.0,
-            ),
-            padding: EdgeInsets.symmetric(
-              horizontal: 30.0,
-            ),
+            margin: EdgeInsets.symmetric(horizontal: 30.0),
+            padding: EdgeInsets.symmetric(horizontal: 30.0),
             height: MediaQuery.of(context).size.height * 0.55,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.9),
+              color: Colors.white.withValues(alpha: 0.9),
               borderRadius: BorderRadius.circular(15.0),
             ),
 
@@ -86,10 +126,9 @@ class _SearchScreenState extends State<SearchScreen> {
 
                 RichText(
                   text: TextSpan(
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge!
-                        .copyWith(fontSize: 25),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyLarge!.copyWith(fontSize: 25),
 
                     children: [
                       TextSpan(
@@ -102,9 +141,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
                       TextSpan(
                         text: ' cal',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: TextStyle(fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),
@@ -141,10 +178,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
                         child: Text(
                           priority,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18.0,
-                          ),
+                          style: TextStyle(color: Colors.black, fontSize: 18.0),
                         ),
                       );
                     }).toList(),
@@ -160,7 +194,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       });
                     },
 
-                    value: _diet,
+                    initialValue: _diet,
                   ),
                 ),
 
@@ -174,8 +208,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       vertical: 8.0,
                     ),
 
-                    backgroundColor:
-                        Colors.orange,
+                    backgroundColor: Colors.orange,
 
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
@@ -197,6 +230,10 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showUserOptions,
+        child: Icon(Icons.restaurant_menu),
       ),
     );
   }
