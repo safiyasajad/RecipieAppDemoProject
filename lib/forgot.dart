@@ -74,11 +74,66 @@ class _ForgotState extends State<Forgot> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Forgot Password Page"),),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
+       body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage( //sets the backgund image
+              'https://images.unsplash.com/photo-1498837167922-ddd27525d352?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80',
+            ),
+            fit: BoxFit.cover, //fill the entire container by keep its aspect ratio (no stretching) and crop parts of the image if necessary.
+          ),
+        ),
+
+        child: Center(
+          child: Container( //creates a rectangualr box
+            margin: const EdgeInsets.symmetric(
+              horizontal: 30.0, //allows for the box to be placed 30 units from the edge
+            ),
+            //this is the spacing inside the contianer
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 25.0,
+            ),
+
+            height: MediaQuery.of(context).size.height * 0.55, //makes the UI responsive instead of being catered t only one device it will be able to resize based on the screen diemtions.
+
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.9),  //makes the box transulcent
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Row(
+                    mainAxisAlignment:MainAxisAlignment.start,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 10),
+                Text(
+                  'Forgot password?',
+                  
+                  style: TextStyle(
+                    fontSize: 32.0,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2.0,
+                  ),
+                ),
+                
+                SizedBox(height:25,),
+      
             TextField(
               controller:email, //telling code which filed to reference at
               decoration: InputDecoration(
@@ -88,12 +143,12 @@ class _ForgotState extends State<Forgot> {
             ),
             
             SizedBox(height: 20),
-            ElevatedButton(onPressed: (()=>reset()), child: Text("Send Link")),
-            
-
-          ],
+            ElevatedButton(onPressed: (()=>reset()), child: Text("Send Link"),),
+              ],
+            ),
+          ),
         ),
-      )
+       ),
     );
   }
 }
