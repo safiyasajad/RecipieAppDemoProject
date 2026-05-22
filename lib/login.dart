@@ -144,12 +144,39 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Login Page"),),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
+       body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage( //sets the backgund image
+              'https://images.unsplash.com/photo-1498837167922-ddd27525d352?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80',
+            ),
+            fit: BoxFit.cover, //fill the entire container by keep its aspect ratio (no stretching) and crop parts of the image if necessary.
+          ),
+        ),
 
+        child: Center(
+          child: Container( //creates a rectangualr box
+            margin: const EdgeInsets.symmetric(
+              horizontal: 30.0, //allows for the box to be placed 30 units from the edge
+            ),
+
+            //this is the spacing inside the contianer
+            padding: const EdgeInsets.symmetric(
+              horizontal: 30.0,
+              vertical: 20.0,
+            ),
+
+            height: MediaQuery.of(context).size.height * 0.55, //makes the UI responsive instead of being catered t only one device it will be able to resize based on the screen diemtions.
+
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.9), 
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+
+      
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children:[
             //textfield for the email box 
             TextField(
               controller:email, //telling code which filed to reference at
@@ -233,12 +260,14 @@ class _LoginState extends State<Login> {
                       color: Colors.blue,
                       fontSize: 14.0,
                       fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),   
-          ],
+                ],
+              ),   
+            ],
+          ),
+          )
         ),
       )
     );
