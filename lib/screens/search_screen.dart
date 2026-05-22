@@ -95,7 +95,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       TextSpan(
                         text: _targetCalories.truncate().toString(),
                         style: TextStyle(
-                          color: Theme.of(context).primaryColor,
+                          color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -113,8 +113,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 // sets the target calories
                 SliderTheme(
                   data: SliderTheme.of(context).copyWith(
-                    thumbColor: Theme.of(context).primaryColor,
-                    activeTrackColor: Theme.of(context).primaryColor,
+                    thumbColor: Colors.orange,
+                    activeTrackColor: Colors.orange,
                     inactiveTrackColor: Colors.lightBlue[100],
                     trackHeight: 6.0,
                   ),
@@ -175,7 +175,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
 
                     backgroundColor:
-                        Theme.of(context).primaryColor,
+                        Colors.orange,
 
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),

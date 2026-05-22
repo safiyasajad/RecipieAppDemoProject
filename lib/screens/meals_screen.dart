@@ -27,7 +27,7 @@ class _MealsScreenState extends State<MealsScreen> {
       height: 140.0,
       margin: const EdgeInsets.all(20.0),
       padding: const EdgeInsets.symmetric(
-        horizontal: 15.0,
+        horizontal: 20.0,
         vertical: 10.0,
       ),
       decoration: BoxDecoration(
@@ -56,18 +56,18 @@ class _MealsScreenState extends State<MealsScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                'Calories: ${widget.mealPlan.calories} cal',
+                'Calories: ${widget.mealPlan.calories.round()} cal',
                 style: const TextStyle(
                   fontSize: 20.0,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
               Text(
-                'Protein: ${widget.mealPlan.protein} g',
+                'Fat: ${widget.mealPlan.fat.round()} g',
                 style: const TextStyle(
                   fontSize: 20.0,
-                  fontWeight: FontWeight.w600,
-                ),
+                  fontWeight: FontWeight.w400,
+                )
               ),
             ],
           ),
@@ -76,17 +76,17 @@ class _MealsScreenState extends State<MealsScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                'Fat: ${widget.mealPlan.fat} g',
+                'Protein: ${widget.mealPlan.protein.round()} g',
                 style: const TextStyle(
                   fontSize: 20.0,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
               Text(
-                'Carbs: ${widget.mealPlan.carbs} g',
+                'Carbs: ${widget.mealPlan.carbs.round()} g',
                 style: const TextStyle(
                   fontSize: 20.0,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
             ],
