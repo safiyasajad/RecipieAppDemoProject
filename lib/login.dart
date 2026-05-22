@@ -169,7 +169,7 @@ class _LoginState extends State<Login> {
             height: MediaQuery.of(context).size.height * 0.55, //makes the UI responsive instead of being catered t only one device it will be able to resize based on the screen diemtions.
 
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.9),  //makes the box transulcent
+              color: Colors.white.withOpacity(0.9),  //makes the box
               borderRadius: BorderRadius.circular(15.0),
             ),
 
