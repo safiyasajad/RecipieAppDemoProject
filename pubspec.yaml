@@ -38,6 +38,10 @@ dependencies:
   firebase_auth: ^6.5.1
   get: ^4.7.3
   cloud_firestore: ^6.4.1
+  
+  http: ^1.2.2 #allows for plugins to send requests to get data
+  webview_flutter: ^4.13.1 #allows viewing of web pages
+
 
 dev_dependencies:
   flutter_test:
