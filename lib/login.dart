@@ -163,21 +163,31 @@ class _LoginState extends State<Login> {
             //this is the spacing inside the contianer
             padding: const EdgeInsets.symmetric(
               horizontal: 30.0,
-              vertical: 20.0,
+              vertical: 25.0,
             ),
 
             height: MediaQuery.of(context).size.height * 0.55, //makes the UI responsive instead of being catered t only one device it will be able to resize based on the screen diemtions.
 
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.9), 
+              color: Colors.white.withOpacity(0.9),  //makes the box transulcent
               borderRadius: BorderRadius.circular(15.0),
             ),
 
-      
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children:[
-            //textfield for the email box 
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'Login Page',
+                  
+                  style: TextStyle(
+                    fontSize: 32.0,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2.0,
+                  ),
+                ),
+                
+                SizedBox(height:25,),
+
             TextField(
               controller:email, //telling code which filed to reference at
               decoration: InputDecoration(
@@ -185,7 +195,7 @@ class _LoginState extends State<Login> {
                 border: const OutlineInputBorder(),
                 hintText: "Email") //the hint that is given in the email text field
             ),
-            SizedBox(height:20,),
+            SizedBox(height:25,),
 
             //textfield for the password box
             TextField(
@@ -210,7 +220,7 @@ class _LoginState extends State<Login> {
               ),
             ),
             
-            SizedBox(height:20,),
+            SizedBox(height:25,),
             
             ElevatedButton(
               onPressed: isSigningIn ? null : signIn,
@@ -218,7 +228,7 @@ class _LoginState extends State<Login> {
               //Change button text dynamically.
               child: Text(isSigningIn ? "Signing in..." : "Login"),
             ), //when login button is clicked it signs in the user
-            SizedBox(height:20,),
+            SizedBox(height:25,),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -245,8 +255,10 @@ class _LoginState extends State<Login> {
                 ),
               ],
             ),
-            SizedBox(height:20,),
+            SizedBox(height:25,),
             //changing the feel of the forget password button
+
+
             Row(
               mainAxisAlignment: MainAxisAlignment.end, //makes the texton the right side of the screen 
               children: [
@@ -260,16 +272,16 @@ class _LoginState extends State<Login> {
                       color: Colors.blue,
                       fontSize: 14.0,
                       fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),   
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
-          )
         ),
-      )
+       )
     );
   }
 }
