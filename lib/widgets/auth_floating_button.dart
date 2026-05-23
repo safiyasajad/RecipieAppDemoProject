@@ -137,18 +137,62 @@ class AuthFloatingButton extends StatelessWidget {
                 );
               }
 
-              return ListView.builder(
-                shrinkWrap: true,
-                itemCount: users.length,
-                itemBuilder: (context, index) {
-                  final user = users[index].data();
+              return SizedBox(
+                height: MediaQuery.of(context).size.height * 0.65,
+                child: ListView.builder(
+                  itemCount: users.length,
+                  itemBuilder: (context, index) {
+                    final userDoc = users[index];
+                    final user = userDoc.data();
+                    final role = user['role'] == 'admin' ? 'admin' : 'user';
 
-                  return ListTile(
-                    leading: const Icon(Icons.person),
-                    title: Text(user['email'] ?? 'No email'),
-                    subtitle: Text('Role: ${user['role'] ?? 'user'}'),
-                  );
-                },
+                    return ListTile(
+                      leading: const Icon(Icons.person),
+                      title: Text(user['email'] ?? 'No email'),
+                      subtitle: Text('Role: $role'),
+                      trailing: DropdownButton<String>(
+                        value: role,
+                        items: const [
+                          DropdownMenuItem(value: 'user', child: Text('User')),
+                          DropdownMenuItem(
+                            value: 'admin',
+                            child: Text('Admin'),
+                          ),
+                        ],
+                        onChanged: (newRole) async {
+                          if (newRole == null || newRole == role) {
+                            return;
+                          }
+
+                          final messenger = ScaffoldMessenger.of(context);
+
+                          try {
+                            await FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(userDoc.id)
+                                .update({'role': newRole});
+
+                            messenger.showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Role changed to $newRole for ${user['email'] ?? 'user'}.',
+                                ),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                          } catch (error) {
+                            messenger.showSnackBar(
+                              SnackBar(
+                                content: Text('Could not update role: $error'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    );
+                  },
+                ),
               );
             },
           ),
