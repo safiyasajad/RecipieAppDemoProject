@@ -18,8 +18,14 @@ class AuthFloatingButton extends StatelessWidget {
     'Whole30',
   ];
 
-  Future<void> _signout() async {
+  Future<void> _signout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
+
+    if (!context.mounted) return;
+
+    Navigator.of(context, rootNavigator: true).popUntil((route) {
+      return route.isFirst;
+    });
   }
 
   Future<bool> _isAdmin() async {
@@ -80,7 +86,7 @@ class AuthFloatingButton extends StatelessWidget {
                 title: const Text('Logout'),
                 onTap: () {
                   Navigator.pop(sheetContext);
-                  _signout();
+                  _signout(context);
                 },
               ),
             ],
