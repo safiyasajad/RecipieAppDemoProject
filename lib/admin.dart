@@ -94,14 +94,17 @@ class _AdminPageState extends State<AdminPage> {
     final imageController = TextEditingController();
     final caloriesController = TextEditingController();
     final descriptionController = TextEditingController();
+    final pageMessenger = ScaffoldMessenger.of(context);
+    final pageNavigator = Navigator.of(context, rootNavigator: true);
     String selectedDiet = _diet;
     bool isSaving = false;
+    bool dialogIsOpen = true;
 
     showDialog(
       context: context,
       builder: (dialogContext) {
         return StatefulBuilder(
-          builder: (context, setDialogState) {
+          builder: (builderContext, setDialogState) {
             return AlertDialog(
               title: const Text('Add Recipe'),
               content: SingleChildScrollView(
@@ -151,7 +154,7 @@ class _AdminPageState extends State<AdminPage> {
               ),
               actions: [
                 TextButton(
-                  onPressed: isSaving ? null : () => Navigator.pop(context),
+                  onPressed: isSaving ? null : () => pageNavigator.pop(),
                   child: const Text('Cancel'),
                 ),
                 ElevatedButton(
@@ -168,7 +171,7 @@ class _AdminPageState extends State<AdminPage> {
                           if (title.isEmpty ||
                               imageUrl.isEmpty ||
                               calories == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
+                            pageMessenger.showSnackBar(
                               const SnackBar(
                                 content: Text(
                                   'Please enter recipe name, image URL, and calories.',
@@ -179,12 +182,11 @@ class _AdminPageState extends State<AdminPage> {
                             return;
                           }
 
+                          if (!dialogIsOpen) return;
+
                           setDialogState(() {
                             isSaving = true;
                           });
-
-                          final messenger = ScaffoldMessenger.of(context);
-                          final navigator = Navigator.of(dialogContext);
 
                           try {
                             await FirebaseFirestore.instance
@@ -199,21 +201,23 @@ class _AdminPageState extends State<AdminPage> {
                                 })
                                 .timeout(const Duration(seconds: 12));
 
-                            if (!mounted) return;
+                            if (!mounted || !dialogIsOpen) return;
 
-                            navigator.pop();
-                            messenger.showSnackBar(
+                            pageNavigator.pop();
+                            pageMessenger.showSnackBar(
                               const SnackBar(
                                 content: Text('Recipe added successfully'),
                                 backgroundColor: Colors.green,
                               ),
                             );
                           } catch (error) {
+                            if (!mounted || !dialogIsOpen) return;
+
                             setDialogState(() {
                               isSaving = false;
                             });
 
-                            messenger.showSnackBar(
+                            pageMessenger.showSnackBar(
                               SnackBar(
                                 content: Text(
                                   'Recipe could not be saved: $error',
@@ -232,6 +236,7 @@ class _AdminPageState extends State<AdminPage> {
         );
       },
     ).whenComplete(() {
+      dialogIsOpen = false;
       titleController.dispose();
       imageController.dispose();
       caloriesController.dispose();
