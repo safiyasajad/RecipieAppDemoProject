@@ -8,14 +8,12 @@ import 'package:newproject/models/meal_plan_model.dart';
 import 'package:newproject/models/recipie_model.dart';
 import 'package:newproject/screens/recipie_screen.dart';
 import 'package:newproject/services/api_service.dart';
+import 'package:newproject/widgets/auth_floating_button.dart';
 
 class MealsScreen extends StatefulWidget {
   final MealPlan mealPlan;
 
-  const MealsScreen({
-    super.key,
-    required this.mealPlan,
-  });
+  const MealsScreen({super.key, required this.mealPlan});
 
   @override
   State<MealsScreen> createState() => _MealsScreenState();
@@ -26,10 +24,7 @@ class _MealsScreenState extends State<MealsScreen> {
     return Container(
       height: 140.0,
       margin: const EdgeInsets.all(20.0),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20.0,
-        vertical: 10.0,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15.0),
@@ -46,10 +41,7 @@ class _MealsScreenState extends State<MealsScreen> {
         children: <Widget>[
           const Text(
             'Total Nutrients',
-            style: TextStyle(
-              fontSize: 24.0,
-              fontWeight: FontWeight.w600,
-            ),
+            style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 10.0),
           Row(
@@ -67,7 +59,7 @@ class _MealsScreenState extends State<MealsScreen> {
                 style: const TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.w400,
-                )
+                ),
               ),
             ],
           ),
@@ -111,10 +103,7 @@ class _MealsScreenState extends State<MealsScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => RecipeScreen(
-              mealType: mealType,
-              recipe: recipe,
-            ),
+            builder: (_) => RecipeScreen(mealType: mealType, recipe: recipe),
           ),
         );
       },
@@ -194,9 +183,8 @@ class _MealsScreenState extends State<MealsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Your Meal Plan'),
-      ),
+      appBar: AppBar(title: const Text('Your Meal Plan')),
+      floatingActionButton: const AuthFloatingButton(),
       body: ListView.builder(
         itemCount: 1 + widget.mealPlan.meals.length,
         itemBuilder: (BuildContext context, int index) {

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:newproject/widgets/auth_floating_button.dart';
 
 class AdminRecipesScreen extends StatelessWidget {
   const AdminRecipesScreen({super.key});
@@ -8,6 +9,7 @@ class AdminRecipesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Admin Recipes')),
+      floatingActionButton: const AuthFloatingButton(),
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
         stream: FirebaseFirestore.instance
             .collection('admin_recipes')

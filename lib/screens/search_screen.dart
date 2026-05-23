@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart'; //standard widget that has elements to build interface
 import 'package:newproject/models/meal_plan_model.dart';
-import 'package:newproject/screens/admin_recipes_screen.dart';
 import 'package:newproject/screens/meals_screen.dart';
 import 'package:newproject/services/api_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:newproject/widgets/auth_floating_button.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -13,46 +12,6 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  Future<void> signout() async {
-    await FirebaseAuth.instance.signOut(); //signs user out of application.
-  }
-
-  void _showUserOptions() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.restaurant_menu),
-                title: const Text('Admin Recipes'),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const AdminRecipesScreen(),
-                    ),
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.logout),
-                title: const Text('Logout'),
-                onTap: () {
-                  Navigator.pop(context);
-                  signout();
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   final List<String> _diets = [
     'None',
     'Gluten Free',
@@ -231,10 +190,7 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showUserOptions,
-        child: Icon(Icons.restaurant_menu),
-      ),
+      floatingActionButton: const AuthFloatingButton(),
     );
   }
 }

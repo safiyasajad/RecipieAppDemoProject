@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:newproject/screens/admin_recipes_screen.dart';
 import 'package:newproject/wrapper.dart';
 import 'package:get/get.dart';
-void main() async{
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
@@ -36,6 +38,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
+      routes: {'/admin-recipes': (_) => const AdminRecipesScreen()},
       home: Wrapper(),
     );
   }
