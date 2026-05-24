@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:newproject/models/meal_plan_model.dart';
 import 'package:newproject/screens/meals_screen.dart';
@@ -30,6 +31,16 @@ class _AdminPageState extends State<AdminPage> {
   double _targetCalories = 2250;
   String _diet = 'None';
 
+  String get _adminName {
+    final email = FirebaseAuth.instance.currentUser?.email ?? '';
+
+    if (!email.contains('@')) {
+      return email;
+    }
+
+    return email.split('@').first;
+  }
+
   // Generate meal plan
   void _searchMealPlan() async {
     MealPlan mealPlan = await ApiService.instance.generateMealPlan(
@@ -48,6 +59,7 @@ class _AdminPageState extends State<AdminPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text('Hi admin $_adminName')),
       floatingActionButton: const AuthFloatingButton(),
 
       body: Container(
