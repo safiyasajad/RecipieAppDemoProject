@@ -40,8 +40,8 @@ class _MealsScreenState extends State<MealsScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           const Text(
-            'Total Nutrients',
-            style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w600),
+            'Total Nutrients For this meal plan',
+            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 10.0),
           Row(
