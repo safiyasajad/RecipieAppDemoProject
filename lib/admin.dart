@@ -6,6 +6,9 @@ import 'package:newproject/screens/meals_screen.dart';
 import 'package:newproject/services/api_service.dart';
 import 'package:newproject/widgets/auth_floating_button.dart';
 
+// Main page for admin users after login.
+// Admins get the same meal planner as normal users, plus admin tools through
+// the persistent floating button.
 class AdminPage extends StatefulWidget {
   const AdminPage({super.key});
 
@@ -14,7 +17,7 @@ class AdminPage extends StatefulWidget {
 }
 
 class _AdminPageState extends State<AdminPage> {
-  // Diet options
+  // Diet options shown in the dropdown and sent to the meal plan API.
   final List<String> _diets = [
     'None',
     'Gluten Free',
@@ -31,6 +34,8 @@ class _AdminPageState extends State<AdminPage> {
   double _targetCalories = 2250;
   String _diet = 'None';
 
+  // Uses the part of the admin's email before @ as the name in the app bar.
+  // Example: admin@gmail.com becomes admin.
   String get _adminName {
     final email = FirebaseAuth.instance.currentUser?.email ?? '';
 
@@ -41,7 +46,8 @@ class _AdminPageState extends State<AdminPage> {
     return email.split('@').first;
   }
 
-  // Generate meal plan
+  // Generates a meal plan with the selected target calories and diet, then
+  // opens the meal results screen.
   void _searchMealPlan() async {
     MealPlan mealPlan = await ApiService.instance.generateMealPlan(
       targetCalories: _targetCalories.toInt(),
@@ -60,6 +66,8 @@ class _AdminPageState extends State<AdminPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Hi admin $_adminName')),
+      // This button shows admin actions: add recipe, view recipes, see users,
+      // change roles, and logout.
       floatingActionButton: const AuthFloatingButton(),
 
       body: Container(
@@ -122,7 +130,7 @@ class _AdminPageState extends State<AdminPage> {
                   ),
                 ),
 
-                // Slider
+                // Slider changes the calorie target used when searching.
                 SliderTheme(
                   data: SliderTheme.of(context).copyWith(
                     thumbColor: Colors.orange,
@@ -144,7 +152,7 @@ class _AdminPageState extends State<AdminPage> {
                   ),
                 ),
 
-                // Diet dropdown
+                // Dropdown changes the diet sent to the API.
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30.0),
 
@@ -180,7 +188,7 @@ class _AdminPageState extends State<AdminPage> {
 
                 const SizedBox(height: 30.0),
 
-                // Search button
+                // Search button calls the API and navigates to MealsScreen.
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(

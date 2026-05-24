@@ -3,6 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:newproject/widgets/auth_floating_button.dart';
 
+// Displays every recipe that an admin has added to Firestore.
+// Both admins and normal users can open this screen, but only admins are shown
+// the edit/delete menu for each recipe card.
 class AdminRecipesScreen extends StatefulWidget {
   const AdminRecipesScreen({super.key});
 
@@ -11,9 +14,16 @@ class AdminRecipesScreen extends StatefulWidget {
 }
 
 class _AdminRecipesScreenState extends State<AdminRecipesScreen> {
+  // Stores the Firestore document IDs of cards that are currently expanded.
+  // A Set is used so each recipe can be added/removed quickly.
   final Set<String> _expandedRecipeIds = {};
+
+  // Checks the logged-in user's role once when the screen is created.
+  // This prevents repeated Firestore role checks every time the UI rebuilds.
   late final Future<bool> _isAdminFuture = _isAdmin();
 
+  // Diet choices used in the edit dialog. These match the diet options used by
+  // the meal planner screens so recipes stay consistent across the app.
   static const List<String> _diets = [
     'None',
     'Gluten Free',
@@ -27,6 +37,8 @@ class _AdminRecipesScreenState extends State<AdminRecipesScreen> {
     'Whole30',
   ];
 
+  // Reads the current user's document from Firestore and returns true only
+  // when their role field is exactly "admin".
   Future<bool> _isAdmin() async {
     final user = FirebaseAuth.instance.currentUser;
 
@@ -42,6 +54,7 @@ class _AdminRecipesScreenState extends State<AdminRecipesScreen> {
     return userDoc.data()?['role'] == 'admin';
   }
 
+  // Expands a recipe card if it is closed, or collapses it if it is open.
   void _toggleRecipe(String recipeId) {
     setState(() {
       if (_expandedRecipeIds.contains(recipeId)) {
@@ -52,6 +65,8 @@ class _AdminRecipesScreenState extends State<AdminRecipesScreen> {
     });
   }
 
+  // Deletes a recipe after asking the admin to confirm the action.
+  // The document is removed from the admin_recipes collection.
   Future<void> _deleteRecipe(String recipeId) async {
     final shouldDelete = await showDialog<bool>(
       context: context,
@@ -103,6 +118,8 @@ class _AdminRecipesScreenState extends State<AdminRecipesScreen> {
     }
   }
 
+  // Opens an edit form filled with the recipe's existing Firestore data.
+  // When saved, only this recipe document is updated.
   Future<void> _editRecipe(String recipeId, Map<String, dynamic> recipe) async {
     final titleController = TextEditingController(text: recipe['title'] ?? '');
     final imageController = TextEditingController(
@@ -126,6 +143,8 @@ class _AdminRecipesScreenState extends State<AdminRecipesScreen> {
         : 'None';
     bool isSaving = false;
 
+    // The dialog uses StatefulBuilder because only the dialog needs temporary
+    // state for the selected diet and "Saving..." button text.
     await showDialog<void>(
       context: context,
       builder: (dialogContext) {
@@ -218,6 +237,8 @@ class _AdminRecipesScreenState extends State<AdminRecipesScreen> {
                           final fat = int.tryParse(fatController.text.trim());
                           final description = descriptionController.text.trim();
 
+                          // Validate required numeric and text fields before
+                          // writing to Firestore.
                           if (title.isEmpty ||
                               imageUrl.isEmpty ||
                               calories == null ||
@@ -240,6 +261,8 @@ class _AdminRecipesScreenState extends State<AdminRecipesScreen> {
                           });
 
                           try {
+                            // Update the existing recipe document with the
+                            // newly entered values.
                             await FirebaseFirestore.instance
                                 .collection('admin_recipes')
                                 .doc(recipeId)
@@ -305,6 +328,8 @@ class _AdminRecipesScreenState extends State<AdminRecipesScreen> {
       appBar: AppBar(title: const Text('Admin Recipes')),
       floatingActionButton: const AuthFloatingButton(),
       body: FutureBuilder<bool>(
+        // First, find out whether this viewer is an admin.
+        // The result controls whether edit/delete actions are visible.
         future: _isAdminFuture,
         builder: (context, adminSnapshot) {
           if (adminSnapshot.connectionState == ConnectionState.waiting) {
@@ -314,6 +339,8 @@ class _AdminRecipesScreenState extends State<AdminRecipesScreen> {
           final isAdmin = adminSnapshot.data ?? false;
 
           return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+            // Listen live to admin_recipes so added, edited, or deleted recipes
+            // appear immediately without manually refreshing the page.
             stream: FirebaseFirestore.instance
                 .collection('admin_recipes')
                 .orderBy('createdAt', descending: true)
@@ -351,6 +378,8 @@ class _AdminRecipesScreenState extends State<AdminRecipesScreen> {
                   final isExpanded = _expandedRecipeIds.contains(recipeDoc.id);
 
                   return GestureDetector(
+                    // Tapping anywhere on the card expands/collapses the
+                    // nutrition and description section.
                     onTap: () => _toggleRecipe(recipeDoc.id),
                     child: Card(
                       margin: const EdgeInsets.only(bottom: 16),
@@ -392,6 +421,9 @@ class _AdminRecipesScreenState extends State<AdminRecipesScreen> {
                                         ),
                                       ),
                                     ),
+                                    // Only admins can see this menu. Normal
+                                    // users can view recipes but cannot edit
+                                    // or delete them.
                                     if (isAdmin)
                                       PopupMenuButton<String>(
                                         onSelected: (value) {

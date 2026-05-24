@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+// Floating action button used across authenticated pages.
+// It changes its menu depending on whether the logged-in user is an admin.
+// Login, signup, and forgot password pages do not use this widget.
 class AuthFloatingButton extends StatefulWidget {
   const AuthFloatingButton({super.key});
 
@@ -10,6 +13,7 @@ class AuthFloatingButton extends StatefulWidget {
 }
 
 class _AuthFloatingButtonState extends State<AuthFloatingButton> {
+  // Diet choices used when admins add a custom recipe.
   static const List<String> _diets = [
     'None',
     'Gluten Free',
@@ -23,8 +27,12 @@ class _AuthFloatingButtonState extends State<AuthFloatingButton> {
     'Whole30',
   ];
 
+  // Cache the admin check once so normal page rebuilds, such as dragging the
+  // calorie slider, do not repeatedly read Firestore.
   late final Future<bool> _adminFuture = _isAdmin();
 
+  // Signs out the current Firebase user and returns the app to the root route.
+  // Wrapper then detects there is no logged-in user and shows Login.
   Future<void> _signout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
 
@@ -35,6 +43,7 @@ class _AuthFloatingButtonState extends State<AuthFloatingButton> {
     });
   }
 
+  // Reads the logged-in user's Firestore document to check their role.
   Future<bool> _isAdmin() async {
     final user = FirebaseAuth.instance.currentUser;
 
@@ -50,10 +59,12 @@ class _AuthFloatingButtonState extends State<AuthFloatingButton> {
     return userDoc.data()?['role'] == 'admin';
   }
 
+  // Opens the shared page where users and admins can view admin recipes.
   void _openRecipes(BuildContext context) {
     Navigator.pushNamed(context, '/admin-recipes');
   }
 
+  // Opens the bottom sheet menu. Admins see extra management options.
   void _showOptions(BuildContext context, bool isAdmin) {
     showModalBottomSheet(
       context: context,
@@ -103,6 +114,7 @@ class _AuthFloatingButtonState extends State<AuthFloatingButton> {
     );
   }
 
+  // Opens the add-recipe form for admins.
   void _showAddRecipeDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -110,6 +122,7 @@ class _AuthFloatingButtonState extends State<AuthFloatingButton> {
     );
   }
 
+  // Shows all user documents and lets admins change each user's role.
   void _showUsersSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -174,6 +187,7 @@ class _AuthFloatingButtonState extends State<AuthFloatingButton> {
                           final messenger = ScaffoldMessenger.of(context);
 
                           try {
+                            // Update only the role field of this user document.
                             await FirebaseFirestore.instance
                                 .collection('users')
                                 .doc(userDoc.id)
@@ -229,6 +243,8 @@ class _AuthFloatingButtonState extends State<AuthFloatingButton> {
   }
 }
 
+// Dialog used by admins to create a new recipe in Firestore.
+// It is a StatefulWidget so the Save button can show "Saving..." safely.
 class _AddRecipeDialog extends StatefulWidget {
   final List<String> diets;
 
@@ -239,6 +255,7 @@ class _AddRecipeDialog extends StatefulWidget {
 }
 
 class _AddRecipeDialogState extends State<_AddRecipeDialog> {
+  // Controllers hold the current text typed into each form field.
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _imageController = TextEditingController();
   final TextEditingController _caloriesController = TextEditingController();
@@ -250,6 +267,7 @@ class _AddRecipeDialogState extends State<_AddRecipeDialog> {
   String _selectedDiet = 'None';
   bool _isSaving = false;
 
+  // Dispose controllers to release resources when the dialog closes.
   @override
   void dispose() {
     _titleController.dispose();
@@ -262,6 +280,7 @@ class _AddRecipeDialogState extends State<_AddRecipeDialog> {
     super.dispose();
   }
 
+  // Validates form values and writes a new document to admin_recipes.
   Future<void> _saveRecipe() async {
     final title = _titleController.text.trim();
     final imageUrl = _imageController.text.trim();
@@ -273,6 +292,7 @@ class _AddRecipeDialogState extends State<_AddRecipeDialog> {
     final messenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
 
+    // Required fields must be present and numeric nutrient values must parse.
     if (title.isEmpty ||
         imageUrl.isEmpty ||
         calories == null ||
@@ -295,6 +315,7 @@ class _AddRecipeDialogState extends State<_AddRecipeDialog> {
     });
 
     try {
+      // Store the admin-created recipe so all logged-in users can view it.
       await FirebaseFirestore.instance
           .collection('admin_recipes')
           .add({

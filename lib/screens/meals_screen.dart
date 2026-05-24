@@ -10,6 +10,8 @@ import 'package:newproject/screens/recipie_screen.dart';
 import 'package:newproject/services/api_service.dart';
 import 'package:newproject/widgets/auth_floating_button.dart';
 
+// Shows the meal plan returned by the API after the user/admin searches.
+// It displays total nutrients first, then each meal card below it.
 class MealsScreen extends StatefulWidget {
   final MealPlan mealPlan;
 
@@ -20,6 +22,8 @@ class MealsScreen extends StatefulWidget {
 }
 
 class _MealsScreenState extends State<MealsScreen> {
+  // Builds the summary card at the top of the screen.
+  // The values come from widget.mealPlan.nutrients.
   Widget _buildTotalNutrientsCard() {
     return Container(
       height: 140.0,
@@ -88,12 +92,14 @@ class _MealsScreenState extends State<MealsScreen> {
     );
   }
 
+  // Builds one visual meal card. Tapping a meal fetches full recipe details
+  // from the API and opens RecipeScreen.
   Widget _buildMealCard(Meal meal, int index) {
     String mealType = _mealType(index);
 
     return GestureDetector(
       onTap: () async {
-        // fetch recipe by id and navigate to respective recipe screen
+        // Fetch recipe by id and navigate to the respective recipe screen.
         Recipe recipe = await ApiService.instance.fetchRecipe(
           meal.id.toString(),
         );
@@ -167,6 +173,8 @@ class _MealsScreenState extends State<MealsScreen> {
     );
   }
 
+  // The API returns meals as a list, so this method converts list positions
+  // into readable labels.
   String _mealType(int index) {
     switch (index) {
       case 0:
@@ -185,6 +193,8 @@ class _MealsScreenState extends State<MealsScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Your Meal Plan')),
       floatingActionButton: const AuthFloatingButton(),
+      // The first list item is the total nutrients card.
+      // Every other item is one meal from the generated meal plan.
       body: ListView.builder(
         itemCount: 1 + widget.mealPlan.meals.length,
         itemBuilder: (BuildContext context, int index) {

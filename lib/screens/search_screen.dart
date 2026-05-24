@@ -5,6 +5,9 @@ import 'package:newproject/screens/meals_screen.dart';
 import 'package:newproject/services/api_service.dart';
 import 'package:newproject/widgets/auth_floating_button.dart';
 
+// Main page for a normal user after login.
+// The user chooses target calories and diet, then searches for a generated
+// meal plan from the API.
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
 
@@ -13,6 +16,8 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+  // Diet values shown in the dropdown. These are passed to the API when
+  // generating a meal plan.
   final List<String> _diets = [
     'None',
     'Gluten Free',
@@ -29,6 +34,8 @@ class _SearchScreenState extends State<SearchScreen> {
   double _targetCalories = 2250;
   String _diet = 'None';
 
+  // Uses the part of the logged-in email before @ as the display name.
+  // Example: safiya@gmail.com becomes safiya.
   String get _userName {
     final email = FirebaseAuth.instance.currentUser?.email ?? '';
 
@@ -39,8 +46,8 @@ class _SearchScreenState extends State<SearchScreen> {
     return email.split('@').first;
   }
 
-  // generates a meal plan by passing parameters to API_service.instance.generateMealPlan
-  // and pushes the meal plan onto the screen with navigator.push
+  // Generates a meal plan by sending the current slider and diet values to the
+  // API service, then opens the results screen.
   void _searchMealPlan() async {
     MealPlan mealPlan = await ApiService.instance.generateMealPlan(
       targetCalories: _targetCalories.toInt(),
@@ -55,7 +62,9 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  // what the screen looks like upon loading up
+  // Builds the meal planner form: background image, white input panel,
+  // calorie slider, diet dropdown, search button, and the persistent floating
+  // action button for admin recipes/logout.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,7 +133,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                 ),
 
-                // sets the target calories
+                // Slider updates the target calorie number in real time.
                 SliderTheme(
                   data: SliderTheme.of(context).copyWith(
                     thumbColor: Colors.orange,
@@ -144,7 +153,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                 ),
 
-                // dropdown field to select type of diet
+                // Dropdown stores the selected diet in _diet.
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 30.0),
 
@@ -177,7 +186,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
                 SizedBox(height: 30.0),
 
-                // button which will be triggered
+                // Search button calls the API and navigates to MealsScreen.
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(
