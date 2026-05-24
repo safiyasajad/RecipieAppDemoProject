@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart'; //standard widget that has elements to build interface
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:newproject/models/meal_plan_model.dart';
 import 'package:newproject/screens/meals_screen.dart';
 import 'package:newproject/services/api_service.dart';
@@ -28,6 +29,16 @@ class _SearchScreenState extends State<SearchScreen> {
   double _targetCalories = 2250;
   String _diet = 'None';
 
+  String get _userName {
+    final email = FirebaseAuth.instance.currentUser?.email ?? '';
+
+    if (!email.contains('@')) {
+      return email;
+    }
+
+    return email.split('@').first;
+  }
+
   // generates a meal plan by passing parameters to API_service.instance.generateMealPlan
   // and pushes the meal plan onto the screen with navigator.push
   void _searchMealPlan() async {
@@ -48,6 +59,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text('Hi user $_userName')),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -70,14 +82,20 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
 
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'Daily Meal Planner',
-                  style: TextStyle(
-                    fontSize: 32.0,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2.0,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12.0,
+                    vertical: 20.0,
+                  ),
+                  child: Text(
+                    'Daily Meal Planner',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontSize: 32.0,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2.0,
+                    ),
                   ),
                 ),
 
