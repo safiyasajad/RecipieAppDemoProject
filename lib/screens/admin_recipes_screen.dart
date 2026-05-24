@@ -455,7 +455,10 @@ class _AdminRecipesScreenState extends State<AdminRecipesScreen> {
                                 ),
                                 const SizedBox(height: 6),
                                 Text(
-                                  '${recipe['diet'] ?? 'No diet'} - ${recipe['calories'] ?? 0} cal',
+                                  '${recipe['calories'] ?? 0} cal | '
+                                  'P: ${recipe['protein'] ?? 0}g | '
+                                  'C: ${recipe['carbs'] ?? 0}g | '
+                                  'F: ${recipe['fats'] ?? recipe['fat'] ?? 0}g',
                                   style: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w600,
@@ -469,19 +472,6 @@ class _AdminRecipesScreenState extends State<AdminRecipesScreen> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          'Protein: ${recipe['protein'] ?? 0} g',
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                        Text(
-                                          'Carbs: ${recipe['carbs'] ?? 0} g',
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                        Text(
-                                          'Fat: ${recipe['fat'] ?? 0} g',
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                        const SizedBox(height: 10),
                                         Text(
                                           (recipe['description'] ?? '').isEmpty
                                               ? 'No recipe details added.'
