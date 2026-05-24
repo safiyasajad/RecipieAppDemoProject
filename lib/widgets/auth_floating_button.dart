@@ -242,6 +242,9 @@ class _AddRecipeDialogState extends State<_AddRecipeDialog> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _imageController = TextEditingController();
   final TextEditingController _caloriesController = TextEditingController();
+  final TextEditingController _proteinController = TextEditingController();
+  final TextEditingController _carbsController = TextEditingController();
+  final TextEditingController _fatController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
   String _selectedDiet = 'None';
@@ -252,6 +255,9 @@ class _AddRecipeDialogState extends State<_AddRecipeDialog> {
     _titleController.dispose();
     _imageController.dispose();
     _caloriesController.dispose();
+    _proteinController.dispose();
+    _carbsController.dispose();
+    _fatController.dispose();
     _descriptionController.dispose();
     super.dispose();
   }
@@ -260,14 +266,24 @@ class _AddRecipeDialogState extends State<_AddRecipeDialog> {
     final title = _titleController.text.trim();
     final imageUrl = _imageController.text.trim();
     final calories = int.tryParse(_caloriesController.text.trim());
+    final protein = int.tryParse(_proteinController.text.trim());
+    final carbs = int.tryParse(_carbsController.text.trim());
+    final fat = int.tryParse(_fatController.text.trim());
     final description = _descriptionController.text.trim();
     final messenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
 
-    if (title.isEmpty || imageUrl.isEmpty || calories == null) {
+    if (title.isEmpty ||
+        imageUrl.isEmpty ||
+        calories == null ||
+        protein == null ||
+        carbs == null ||
+        fat == null) {
       messenger.showSnackBar(
         const SnackBar(
-          content: Text('Please enter recipe name, image URL, and calories.'),
+          content: Text(
+            'Please enter recipe name, image URL, calories, protein, carbs, and fat.',
+          ),
           backgroundColor: Colors.red,
         ),
       );
@@ -285,6 +301,9 @@ class _AddRecipeDialogState extends State<_AddRecipeDialog> {
             'title': title,
             'imageUrl': imageUrl,
             'calories': calories,
+            'protein': protein,
+            'carbs': carbs,
+            'fat': fat,
             'diet': _selectedDiet,
             'description': description,
             'createdAt': FieldValue.serverTimestamp(),
@@ -337,6 +356,21 @@ class _AddRecipeDialogState extends State<_AddRecipeDialog> {
               controller: _caloriesController,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(labelText: 'Calories'),
+            ),
+            TextField(
+              controller: _proteinController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'Protein (g)'),
+            ),
+            TextField(
+              controller: _carbsController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'Carbs (g)'),
+            ),
+            TextField(
+              controller: _fatController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'Fat (g)'),
             ),
             TextField(
               controller: _descriptionController,
