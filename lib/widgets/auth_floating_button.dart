@@ -2,9 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class AuthFloatingButton extends StatelessWidget {
+class AuthFloatingButton extends StatefulWidget {
   const AuthFloatingButton({super.key});
 
+  @override
+  State<AuthFloatingButton> createState() => _AuthFloatingButtonState();
+}
+
+class _AuthFloatingButtonState extends State<AuthFloatingButton> {
   static const List<String> _diets = [
     'None',
     'Gluten Free',
@@ -17,6 +22,8 @@ class AuthFloatingButton extends StatelessWidget {
     'Primal',
     'Whole30',
   ];
+
+  late final Future<bool> _adminFuture = _isAdmin();
 
   Future<void> _signout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
@@ -204,7 +211,7 @@ class AuthFloatingButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
-      future: _isAdmin(),
+      future: _adminFuture,
       builder: (context, snapshot) {
         final isAdmin = snapshot.data ?? false;
 
