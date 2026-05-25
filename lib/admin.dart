@@ -99,9 +99,9 @@ class _AdminPageState extends State<AdminPage> {
                 const Text(
                   'Daily Meal Planner',
                   style: TextStyle(
-                    fontSize: 32.0,
+                    fontSize: 28.0,
                     fontWeight: FontWeight.bold,
-                    letterSpacing: 2.0,
+                    letterSpacing: 1.0,
                   ),
                 ),
 
