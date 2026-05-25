@@ -86,17 +86,9 @@ class _ForgotState extends State<Forgot> {
 
         child: Center(
           child: Container( //creates a rectangualr box
-            margin: const EdgeInsets.symmetric(
-              horizontal: 30.0, //allows for the box to be placed 30 units from the edge
-            ),
-            //this is the spacing inside the contianer
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20.0,
-              vertical: 25.0,
-            ),
-
-            height: MediaQuery.of(context).size.height * 0.55, //makes the UI responsive instead of being catered t only one device it will be able to resize based on the screen diemtions.
-
+            margin: EdgeInsets.symmetric(horizontal: 42.0),//allows for the box to be placed 30 units from the edge
+            padding: EdgeInsets.symmetric(horizontal: 22.0), //this is the spacing inside the contianer
+            height: MediaQuery.of(context).size.height * 0.40, //makes the UI responsive instead of being catered t only one device it will be able to resize based on the screen diemtions.
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.9),  //makes the box transulcent
               borderRadius: BorderRadius.circular(15.0),
@@ -118,19 +110,30 @@ class _ForgotState extends State<Forgot> {
                             color: Colors.black,
                           ),
                         ),
+                        const Expanded(
+                          child: Text(
+                            'Forgot Password',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 26.0,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.0,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
 
                     const SizedBox(height: 10),
-                Text(
-                  'Forgot password?',
-                  
-                  style: TextStyle(
-                    fontSize: 32.0,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2.0,
-                  ),
-                ),
+                // Text(
+                //   'Forgot password?',
+                //   textAlign: TextAlign.center,
+                //   style: TextStyle(
+                //     fontSize: 26.0,
+                //     fontWeight: FontWeight.bold,
+                //     letterSpacing: 2.0,
+                //   ),
+                // ),
                 
                 SizedBox(height:25,),
       

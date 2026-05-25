@@ -139,18 +139,9 @@ await FirebaseAuth.instance.signOut();
 
         child: Center(
           child: Container( //creates a rectangualr box
-            margin: const EdgeInsets.symmetric(
-              horizontal: 30.0, //allows for the box to be placed 30 units from the edge
-            ),
-
-            //this is the spacing inside the contianer
-            padding: const EdgeInsets.symmetric(
-              horizontal: 30.0,
-              vertical: 25.0,
-            ),
-
+            margin: EdgeInsets.symmetric(horizontal: 42.0),//allows for the box to be placed 30 units from the edge
+            padding: EdgeInsets.symmetric(horizontal: 22.0), //this is the spacing inside the contianer
             height: MediaQuery.of(context).size.height * 0.55, //makes the UI responsive instead of being catered t only one device it will be able to resize based on the screen diemtions.
-
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.9),  //makes the box transulcent
               borderRadius: BorderRadius.circular(15.0),
@@ -160,7 +151,7 @@ await FirebaseAuth.instance.signOut();
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Row(
-                    mainAxisAlignment:MainAxisAlignment.start,
+                    // mainAxisAlignment:MainAxisAlignment.start,
                       children: [
                         IconButton(
                           onPressed: () {
@@ -172,19 +163,23 @@ await FirebaseAuth.instance.signOut();
                             color: Colors.black,
                           ),
                         ),
+                        const Expanded(
+                          child: Text(
+                            'Sign Up Page',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 26.0,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.0,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 48), // balances the IconButton width
                       ],
                     ),
 
                     const SizedBox(height: 10),
-                Text(
-                  'Sign Up Page',
-                  
-                  style: TextStyle(
-                    fontSize: 32.0,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2.0,
-                  ),
-                ),
+                
                 
                 SizedBox(height:25,),
 

@@ -82,9 +82,9 @@ class _SearchScreenState extends State<SearchScreen> {
         // widget in the centre
         child: Center(
           child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 30.0),
-            padding: EdgeInsets.symmetric(horizontal: 30.0),
-            height: MediaQuery.of(context).size.height * 0.55,
+            margin: EdgeInsets.symmetric(horizontal: 42.0),
+            padding: EdgeInsets.symmetric(horizontal: 22.0),
+            height: MediaQuery.of(context).size.height * 0.45,
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.9),
               borderRadius: BorderRadius.circular(15.0),
@@ -95,20 +95,20 @@ class _SearchScreenState extends State<SearchScreen> {
                 Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: 12.0,
-                    vertical: 20.0,
+                    vertical: 12.0,
                   ),
                   child: Text(
                     'Daily Meal Planner',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 32.0,
+                      fontSize: 26.0,
                       fontWeight: FontWeight.bold,
-                      letterSpacing: 2.0,
+                      letterSpacing: 1.0,
                     ),
                   ),
                 ),
 
-                SizedBox(height: 20.0),
+                SizedBox(height: 12.0),
 
                 RichText(
                   text: TextSpan(
@@ -184,7 +184,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                 ),
 
-                SizedBox(height: 30.0),
+                SizedBox(height: 18.0),
 
                 // Search button calls the API and navigates to MealsScreen.
                 ElevatedButton(
