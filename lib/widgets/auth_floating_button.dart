@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:newproject/admin.dart';
+import 'package:newproject/screens/search_screen.dart';
 
 // Floating action button used across authenticated pages.
 // It changes its menu depending on whether the logged-in user is an admin.
@@ -64,6 +66,17 @@ class _AuthFloatingButtonState extends State<AuthFloatingButton> {
     Navigator.pushNamed(context, '/admin-recipes');
   }
 
+  // Opens the meal search/planner page. Admins go to AdminPage so they keep
+  // the admin greeting, while normal users go to SearchScreen.
+  void _openMealSearch(BuildContext context, bool isAdmin) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => isAdmin ? const AdminPage() : const SearchScreen(),
+      ),
+    );
+  }
+
   // Opens the logged-in user's saved favorite meals.
   void _openFavoriteMeals(BuildContext context) {
     Navigator.pushNamed(context, '/favorite-meals');
@@ -78,6 +91,14 @@ class _AuthFloatingButtonState extends State<AuthFloatingButton> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              ListTile(
+                leading: const Icon(Icons.search),
+                title: const Text('Search Meals'),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  _openMealSearch(context, isAdmin);
+                },
+              ),
               if (isAdmin)
                 ListTile(
                   leading: const Icon(Icons.add),
