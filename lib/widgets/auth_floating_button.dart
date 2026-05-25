@@ -64,6 +64,11 @@ class _AuthFloatingButtonState extends State<AuthFloatingButton> {
     Navigator.pushNamed(context, '/admin-recipes');
   }
 
+  // Opens the logged-in user's saved favorite meals.
+  void _openFavoriteMeals(BuildContext context) {
+    Navigator.pushNamed(context, '/favorite-meals');
+  }
+
   // Opens the bottom sheet menu. Admins see extra management options.
   void _showOptions(BuildContext context, bool isAdmin) {
     showModalBottomSheet(
@@ -88,6 +93,14 @@ class _AuthFloatingButtonState extends State<AuthFloatingButton> {
                 onTap: () {
                   Navigator.pop(sheetContext);
                   _openRecipes(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.favorite),
+                title: const Text('Favorite Meals'),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  _openFavoriteMeals(context);
                 },
               ),
               if (isAdmin)

@@ -2,6 +2,8 @@
 // page 2 after the diet type and calories have been set
 // app bar + list view
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:newproject/models/meal_model.dart';
 import 'package:newproject/models/meal_plan_model.dart';
@@ -22,6 +24,64 @@ class MealsScreen extends StatefulWidget {
 }
 
 class _MealsScreenState extends State<MealsScreen> {
+  CollectionReference<Map<String, dynamic>>? _favoritesCollection() {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return null;
+    }
+
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('favorite_meals');
+  }
+
+  Future<void> _toggleFavorite(Meal meal, String mealType) async {
+    final favorites = _favoritesCollection();
+
+    if (favorites == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please login to favorite meals.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    final favoriteDoc = favorites.doc(meal.id.toString());
+    final favoriteSnapshot = await favoriteDoc.get();
+
+    if (favoriteSnapshot.exists) {
+      await favoriteDoc.delete();
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Meal removed from favorites')),
+      );
+      return;
+    }
+
+    await favoriteDoc.set({
+      'id': meal.id,
+      'title': meal.title,
+      'imageUrl': meal.imageUrl,
+      'mealType': mealType,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Meal added to favorites'),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+
   // Builds the summary card at the top of the screen.
   // The values come from widget.mealPlan.nutrients.
   Widget _buildTotalNutrientsCard() {
@@ -96,6 +156,7 @@ class _MealsScreenState extends State<MealsScreen> {
   // from the API and opens RecipeScreen.
   Widget _buildMealCard(Meal meal, int index) {
     String mealType = _mealType(index);
+    final favorites = _favoritesCollection();
 
     return GestureDetector(
       onTap: () async {
@@ -143,6 +204,32 @@ class _MealsScreenState extends State<MealsScreen> {
               ],
             ),
           ),
+          if (favorites != null)
+            Positioned(
+              top: 18,
+              right: 28,
+              child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                stream: favorites.doc(meal.id.toString()).snapshots(),
+                builder: (context, snapshot) {
+                  final isFavorite = snapshot.data?.exists ?? false;
+
+                  return Material(
+                    color: Colors.white70,
+                    shape: const CircleBorder(),
+                    child: IconButton(
+                      tooltip: isFavorite
+                          ? 'Remove favorite'
+                          : 'Add to favorites',
+                      icon: Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: Colors.red,
+                      ),
+                      onPressed: () => _toggleFavorite(meal, mealType),
+                    ),
+                  );
+                },
+              ),
+            ),
           Container(
             margin: const EdgeInsets.all(60.0),
             padding: const EdgeInsets.all(10.0),
