@@ -99,7 +99,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   child: Text(
                     'Daily Meal Planner',
-                    textAlign: TextAlign.left,
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 32.0,
                       fontWeight: FontWeight.bold,
