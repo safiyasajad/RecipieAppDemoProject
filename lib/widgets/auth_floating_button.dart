@@ -40,19 +40,23 @@ class _AuthFloatingButtonState extends State<AuthFloatingButton> {
 
     if (!context.mounted) return;
 
-    Navigator.of(context, rootNavigator: true).popUntil((route) {
+    Navigator.of(context, rootNavigator: true).popUntil((route) { //firebase signs the user out of the application and user returns to root page (login page)
+                                          //removes pages until first route is reached
       return route.isFirst;
     });
   }
 
   // Reads the logged-in user's Firestore document to check their role.
+  //checks to return if logged in user === admin
+  // firestore
+    // user -> uid -> 'role' of uid user
   Future<bool> _isAdmin() async {
     final user = FirebaseAuth.instance.currentUser;
 
     if (user == null) {
       return false;
     }
-
+    //navigates to admin created app
     final userDoc = await FirebaseFirestore.instance
         .collection('users')
         .doc(user.uid)
@@ -62,6 +66,9 @@ class _AuthFloatingButtonState extends State<AuthFloatingButton> {
   }
 
   // Opens the shared page where users and admins can view admin recipes.
+  //Navigation depends on user role.
+  // Admin: Goes to AdminPage
+  //Normal User: Goes to SearchScreen
   void _openRecipes(BuildContext context) {
     Navigator.pushNamed(context, '/admin-recipes');
   }
@@ -91,6 +98,7 @@ class _AuthFloatingButtonState extends State<AuthFloatingButton> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              //meals button
               ListTile(
                 leading: const Icon(Icons.search),
                 title: const Text('Search Meals'),
@@ -100,6 +108,7 @@ class _AuthFloatingButtonState extends State<AuthFloatingButton> {
                 },
               ),
               if (isAdmin)
+              //add recipe button
                 ListTile(
                   leading: const Icon(Icons.add),
                   title: const Text('Add Recipe'),
@@ -108,6 +117,7 @@ class _AuthFloatingButtonState extends State<AuthFloatingButton> {
                     _showAddRecipeDialog(context);
                   },
                 ),
+                //restuaurant menu button
               ListTile(
                 leading: const Icon(Icons.restaurant_menu),
                 title: const Text('Admin Recipes'),
@@ -116,6 +126,7 @@ class _AuthFloatingButtonState extends State<AuthFloatingButton> {
                   _openRecipes(context);
                 },
               ),
+              //favourite meals button
               ListTile(
                 leading: const Icon(Icons.favorite),
                 title: const Text('Favorite Meals'),
@@ -124,7 +135,8 @@ class _AuthFloatingButtonState extends State<AuthFloatingButton> {
                   _openFavoriteMeals(context);
                 },
               ),
-              if (isAdmin)
+              //users button
+               if (isAdmin)   //makes sure that the person is definitively an admin and not user
                 ListTile(
                   leading: const Icon(Icons.people),
                   title: const Text('See Users'),
@@ -158,23 +170,27 @@ class _AuthFloatingButtonState extends State<AuthFloatingButton> {
 
   // Shows all user documents and lets admins change each user's role.
   void _showUsersSheet(BuildContext context) {
-    showModalBottomSheet(
+    showModalBottomSheet( //opens modal sheet from bottom
       context: context,
-      builder: (context) {
+      builder: (context) { //builds the content that is to appear in the sheet
         return SafeArea(
-          child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>( //prevents content from being hidden in system ui area -- bottom navigation bar
+            //connects to furestore users collection, in aohabetical order
             stream: FirebaseFirestore.instance
                 .collection('users')
                 .orderBy('email')
-                .snapshots(),
-            builder: (context, snapshot) {
+                .snapshots(), //to listen to realtime updated
+
+            builder: (context, snapshot) {//builder runs when firestore databse needs new data
+
+            //loading bar
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const SizedBox(
                   height: 180,
                   child: Center(child: CircularProgressIndicator()),
                 );
               }
-
+            //firestore error = error displayed here
               if (snapshot.hasError) {
                 return Padding(
                   padding: const EdgeInsets.all(20),
@@ -182,8 +198,10 @@ class _AuthFloatingButtonState extends State<AuthFloatingButton> {
                 );
               }
 
+              // Gets the list of user documents from Firestore. If there is no data, use an empty list instead.
               final users = snapshot.data?.docs ?? [];
 
+              //when users are empty..show message
               if (users.isEmpty) {
                 return const Padding(
                   padding: EdgeInsets.all(20),
@@ -192,12 +210,16 @@ class _AuthFloatingButtonState extends State<AuthFloatingButton> {
               }
 
               return SizedBox(
-                height: MediaQuery.of(context).size.height * 0.65,
+                height: MediaQuery.of(context).size.height * 0.65, //builds the screen to 65% of screen only
+                
+                //creates scrollable user list
                 child: ListView.builder(
                   itemCount: users.length,
+
+                  //builds individual list tile for each user
                   itemBuilder: (context, index) {
                     final userDoc = users[index];
-                    final user = userDoc.data();
+                    final user = userDoc.data(); //data us converted to dart map
                     final role = user['role'] == 'admin' ? 'admin' : 'user';
 
                     return ListTile(
